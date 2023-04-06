@@ -21,7 +21,10 @@ def main(publication_params, subscription_params):
 
 
 if __name__ == "__main__":
+    number_of_iterations = 10
+
     publication_params_dict = {
+        "number_of_iterations": number_of_iterations,
         "cities": CITIES_IN_ROMANIA,
         "lowest_temperature": LOWEST_TEMPERATURE_IN_ROMANIA,
         "highest_temperature": HIGHEST_TEMPERATURE_IN_ROMANIA,
@@ -34,7 +37,7 @@ if __name__ == "__main__":
     }
 
     subscription_params_dict = {
-        "number_of_subscriptions": 10,
+        "number_of_subscriptions": number_of_iterations,
         "cities": CITIES_IN_ROMANIA,
         "cities_freq": 8,
         "lowest_temperature": LOWEST_TEMPERATURE_IN_ROMANIA,
@@ -50,6 +53,8 @@ if __name__ == "__main__":
         "direction_freq": 1,
         "days_before": 365,
         "days_before_freq": 1,
+        # sum of freq above this line must be greater or equal to number_of_iterations
+        # sum of freq below this line must also be greater or equal to number_of_iterations
         "equals_freq": 7,
         "less_than_freq": 5,
         "more_than_freq": 1,
