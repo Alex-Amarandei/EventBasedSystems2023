@@ -1,0 +1,26 @@
+City: Marghita with operator =
+Temperature: -14 C with operator <
+
+City: Hârlău with operator =
+Temperature: 5 C with operator <
+
+City: Gura Humorului with operator =
+Temperature: 34 C with operator <=
+
+City: Focșani with operator =
+Wind speed: 47 km/h with operator >
+
+City: Târgoviște with operator >=
+Wind direction: W with operator =
+
+City: Lugoj with operator None
+Publication date: 08.11.2022 with operator =
+
+City: Râmnicu Vâlcea with operator =
+
+City: Câmpia Turzii with operator <
+
+Temperature: -20 C with operator <
+
+Temperature: 10 C with operator <
+

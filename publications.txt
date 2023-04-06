@@ -1,0 +1,80 @@
+Station ID: 1
+City: Brăila
+Temperature: 17 C
+Rainfall: 0.7004891335061335 mm
+Wind speed: 54 km/h
+Wind direction: W
+Publication date: 09.03.2023
+
+Station ID: 1
+City: Zalău
+Temperature: 15 C
+Rainfall: 0.8773165991517091 mm
+Wind speed: 47 km/h
+Wind direction: NW
+Publication date: 31.08.2022
+
+Station ID: 1
+City: Buftea
+Temperature: -16 C
+Rainfall: 0.6962294709486738 mm
+Wind speed: 80 km/h
+Wind direction: NW
+Publication date: 03.03.2023
+
+Station ID: 1
+City: Piatra Neamț
+Temperature: 12 C
+Rainfall: 0.49733523587582634 mm
+Wind speed: 73 km/h
+Wind direction: S
+Publication date: 28.01.2023
+
+Station ID: 1
+City: Blaj
+Temperature: 11 C
+Rainfall: 0.7966313860708356 mm
+Wind speed: 52 km/h
+Wind direction: SE
+Publication date: 16.01.2023
+
+Station ID: 1
+City: Pecica
+Temperature: 8 C
+Rainfall: 0.9270722745598643 mm
+Wind speed: 10 km/h
+Wind direction: NW
+Publication date: 21.11.2022
+
+Station ID: 1
+City: Râmnicu Vâlcea
+Temperature: -18 C
+Rainfall: 0.9772819798462329 mm
+Wind speed: 41 km/h
+Wind direction: W
+Publication date: 27.06.2022
+
+Station ID: 1
+City: Focșani
+Temperature: -17 C
+Rainfall: 0.8333401262992277 mm
+Wind speed: 65 km/h
+Wind direction: NE
+Publication date: 18.06.2022
+
+Station ID: 1
+City: Marghita
+Temperature: -14 C
+Rainfall: 0.7089756302582848 mm
+Wind speed: 32 km/h
+Wind direction: N
+Publication date: 18.09.2022
+
+Station ID: 1
+City: Lugoj
+Temperature: -5 C
+Rainfall: 0.7809986965302442 mm
+Wind speed: 34 km/h
+Wind direction: N
+Publication date: 06.04.2022
+
