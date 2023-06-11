@@ -1,11 +1,15 @@
+import bolt.DeliveryBolt;
 import bolt.EmitterBolt;
+import bolt.PrelucrationBolt;
 import bolt.WindSpeedBolt;
 import models.Publication;
+import models.Subscription;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.utils.Utils;
 import spout.PublisherSpout;
+import spout.SubscriptionSpout;
 import utils.DataGenerator;
 
 public class PublisherTopology {
@@ -16,24 +20,21 @@ public class PublisherTopology {
         DataGenerator dataGenerator = new DataGenerator();
 
         // Definiți un emitator de publicații
+        builder.setSpout("subscription-spout", new SubscriptionSpout(dataGenerator));
         builder.setSpout("publisher-spout", new PublisherSpout(dataGenerator));
-
-        // Emitați publicațiile în fluxul "publications"
-//        builder.setBolt("emitter-bolt", new EmitterBolt())
-//                .allGrouping("publisher-spout");
-
-        builder.setBolt("wind-speed-bolt", new WindSpeedBolt())
-                .shuffleGrouping("publisher-spout");
-
+        builder.setBolt("prelucration-bolt", new PrelucrationBolt())
+                .allGrouping("subscription-spout")
+                .allGrouping("publisher-spout");
+        builder.setBolt("delivery-bolt", new DeliveryBolt())
+                .shuffleGrouping("prelucration-bolt", "publications");
         Config config = new Config();
 
         config.registerSerialization(Publication.class);
-
+        config.registerSerialization(Subscription.class);
         config.setDebug(true);
 
         config.put(Config.TOPOLOGY_EXECUTOR_RECEIVE_BUFFER_SIZE,1024);
         config.put(Config.TOPOLOGY_TRANSFER_BATCH_SIZE,1);
-
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("publisher-topology", config, builder.createTopology());
 

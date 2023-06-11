@@ -1,6 +1,7 @@
 package spout;
 
 import models.Publication;
+import models.Subscription;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -11,31 +12,31 @@ import org.apache.storm.utils.Utils;
 import utils.DataGenerator;
 
 import java.util.Map;
+import java.util.Random;
 
-public class PublisherSpout extends BaseRichSpout {
+public class SubscriptionSpout extends BaseRichSpout {
     private final DataGenerator dataGenerator;
     private SpoutOutputCollector collector;
-    private int currentPublication;
+    private int currentSubscribors;
+    private Random random = new Random();
 
-    public PublisherSpout(DataGenerator dataGenerator) {
+    public SubscriptionSpout(DataGenerator dataGenerator){
         this.dataGenerator = dataGenerator;
     }
 
     @Override
-    public void open(Map<String, Object> conf, TopologyContext context, SpoutOutputCollector collector) {
+    public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
         this.collector = collector;
-        this.currentPublication = 0;
+        this.currentSubscribors = 0;
     }
 
     @Override
     public void nextTuple() {
-        if (this.currentPublication < 100) {
-            // Generați o publicație nouă
-            Publication publication = dataGenerator.generatePublication();
+        if (this.currentSubscribors < 100) {
+            Subscription subscription = dataGenerator.generateSubscription();
 
-            // Emiteți publicația în fluxul "publications"
-            collector.emit(new Values(publication));
-            currentPublication++;
+            collector.emit(new Values(Integer.toString(currentSubscribors), subscription));
+            currentSubscribors++;
         }else{
             // Așteptați o perioadă de timp între emiteri
             Utils.sleep(100);
@@ -44,6 +45,7 @@ public class PublisherSpout extends BaseRichSpout {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("publication"));
+        declarer.declare(new Fields("subscriber", "subscription"));
     }
+
 }
