@@ -26,7 +26,7 @@ public class PublisherTopology {
                 .allGrouping("subscription-spout")
                 .allGrouping("publisher-spout");
         builder.setBolt("delivery-bolt", new DeliveryBolt())
-                .shuffleGrouping("prelucration-bolt", "publications");
+                .shuffleGrouping("prelucration-bolt", "test");
         Config config = new Config();
 
         config.registerSerialization(Publication.class);

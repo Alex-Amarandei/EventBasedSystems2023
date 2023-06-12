@@ -10,15 +10,14 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class PrelucrationBolt extends BaseRichBolt {
     private OutputCollector collector;
     private AtomicReference<List<Publication>> publications = new AtomicReference<>(new ArrayList<>());
     private AtomicReference<List<Subscription>> subscriptions = new AtomicReference<>(new ArrayList<>());
+    private AtomicReference<HashMap<List<Publication>, List<Subscription>>> test = new AtomicReference<>(new HashMap<>());
 
     @Override
     public void prepare(Map<String, Object> conf, TopologyContext context, OutputCollector collector) {
@@ -42,8 +41,14 @@ public class PrelucrationBolt extends BaseRichBolt {
             updatedPublications.add(publication);
             publications.set(updatedPublications);
         }
-        collector.emit("subscriptions",  new Values(subscriptions));
-        collector.emit("publications",  new Values(publications));
+
+        HashMap<List<Publication>, List<Subscription>> test2 = new HashMap<>();
+        for (int i = 0; i < publications.get().size(); i++) {
+            if(publications.get().size() <= subscriptions.get().size())
+                test2.put(Collections.singletonList(publications.get().get(i)), Collections.singletonList(subscriptions.get().get(i)));
+        }
+        test.set(test2);
+        collector.emit("test",  new Values(test));
 
         // Confirmarea procesării tuplului
         collector.ack(input);
@@ -52,7 +57,6 @@ public class PrelucrationBolt extends BaseRichBolt {
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
 
-        declarer.declareStream("subscriptions", new Fields("subscriptions"));
-        declarer.declareStream("publications", new Fields("publications"));
+        declarer.declareStream("test", new Fields("test"));
     }
 }
