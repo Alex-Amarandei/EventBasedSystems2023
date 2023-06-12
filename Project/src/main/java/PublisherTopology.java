@@ -12,16 +12,22 @@ import spout.PublisherSpout;
 import spout.SubscriptionSpout;
 import utils.DataGenerator;
 
+import java.util.HashMap;
+
 public class PublisherTopology {
     public static void main(String[] args) throws Exception {
         TopologyBuilder builder = new TopologyBuilder();
 
-        // Definiți generatorul de date
         DataGenerator dataGenerator = new DataGenerator();
 
-        // Definiți un emitator de publicații
-        builder.setSpout("subscription-spout", new SubscriptionSpout(dataGenerator));
-        builder.setSpout("publisher-spout", new PublisherSpout(dataGenerator));
+        builder.setSpout("subscription-spout", new SubscriptionSpout(1000, new HashMap<>() {{
+            put("city", 0.93f);
+            put("temperature", 0.23f);
+            put("rain", 0.49f);
+            put("wind", 0.16f);
+            put("direction", 0.4426f);
+        }}, dataGenerator));
+        builder.setSpout("publisher-spout", new PublisherSpout(1000, dataGenerator));
         builder.setBolt("prelucration-bolt", new PrelucrationBolt())
                 .allGrouping("subscription-spout")
                 .allGrouping("publisher-spout");
@@ -38,10 +44,8 @@ public class PublisherTopology {
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("publisher-topology", config, builder.createTopology());
 
-        // Așteptați un anumit interval de timp (ex. 1 minut) pentru a rula topologia
         Utils.sleep(10000);
 
-        // Opriți topologia și închideți clusterul
         cluster.killTopology("publisher-topology");
         cluster.shutdown();
     }

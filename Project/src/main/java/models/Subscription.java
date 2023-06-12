@@ -13,14 +13,22 @@ import java.time.LocalDate;
 public class Subscription implements Serializable {
     private String city;
     private String cityOperator;
-    private float temperature;
+    private Float temperature;
     private String temperatureOperator;
-    private float windSpeed;
+    private Float windSpeed;
     private String windSpeedOperator;
-    private float rain;
+    private Float rain;
     private String rainOperator;
     private String direction;
     private String directionOperator;
 //    private LocalDate dateTime;
 //    private String dateTimeOperator;
+
+    public boolean isNull(){
+        return  city == null &&
+                temperature == null &&
+                windSpeed == null &&
+                rain == null &&
+                direction == null;
+    }
 }

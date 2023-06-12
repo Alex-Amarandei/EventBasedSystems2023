@@ -16,9 +16,11 @@ public class PublisherSpout extends BaseRichSpout {
     private final DataGenerator dataGenerator;
     private SpoutOutputCollector collector;
     private int currentPublication;
+    private int totalNumberOfPublication;
 
-    public PublisherSpout(DataGenerator dataGenerator) {
+    public PublisherSpout(int totalNumberOfPublication, DataGenerator dataGenerator) {
         this.dataGenerator = dataGenerator;
+        this.totalNumberOfPublication = totalNumberOfPublication;
     }
 
     @Override
@@ -29,7 +31,7 @@ public class PublisherSpout extends BaseRichSpout {
 
     @Override
     public void nextTuple() {
-        if (this.currentPublication < 100) {
+        if (this.currentPublication < this.totalNumberOfPublication) {
             // Generați o publicație nouă
             Publication publication = dataGenerator.generatePublication();
 

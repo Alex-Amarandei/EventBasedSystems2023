@@ -134,25 +134,38 @@ public class DataGenerator implements Serializable {
         return publication;
     }
 
-    public Subscription generateSubscription(){
+    public Subscription generateSubscription(boolean city, boolean temperature, boolean rain, boolean windSpeed, boolean direction){
         Subscription subscription = new Subscription();
 
-        subscription.setCity(CITIES_IN_ROMANIA[random.nextInt(CITIES_IN_ROMANIA.length)]);
-        subscription.setTemperature(random.nextFloat(LOWEST_TEMPERATURE_IN_ROMANIA, HIGHEST_TEMPERATURE_IN_ROMANIA));
-        subscription.setWindSpeed(random.nextFloat(LOWEST_WIND_SPEED_IN_ROMANIA, HIGHEST_WIND_SPEED_IN_ROMANIA));
-        subscription.setRain(random.nextFloat(LOWEST_RAINFALL_VALUE_IN_ROMANIA, HIGHEST_RAINFALL_VALUE_IN_ROMANIA));
-        subscription.setDirection(DIRECTIONS[random.nextInt(DIRECTIONS.length)]);
+        if(city) {
+            subscription.setCity(CITIES_IN_ROMANIA[random.nextInt(CITIES_IN_ROMANIA.length)]);
+            subscription.setCityOperator(OPERATORS[random.nextInt(OPERATORS.length)]);
+        }
+        if(temperature) {
+            subscription.setTemperature(random.nextFloat(LOWEST_TEMPERATURE_IN_ROMANIA, HIGHEST_TEMPERATURE_IN_ROMANIA));
+            subscription.setTemperatureOperator(OPERATORS[random.nextInt(OPERATORS.length)]);
+        }
+        if(rain){
+            subscription.setRain(random.nextFloat(LOWEST_RAINFALL_VALUE_IN_ROMANIA, HIGHEST_RAINFALL_VALUE_IN_ROMANIA));
+            subscription.setRainOperator(OPERATORS[random.nextInt(OPERATORS.length)]);
+        }
+        if(windSpeed){
+            subscription.setWindSpeed(random.nextFloat(LOWEST_WIND_SPEED_IN_ROMANIA, HIGHEST_WIND_SPEED_IN_ROMANIA));
+            subscription.setWindSpeedOperator(OPERATORS[random.nextInt(OPERATORS.length)]);
+        }
+        if(direction){
+            subscription.setDirection(DIRECTIONS[random.nextInt(DIRECTIONS.length)]);
+            subscription.setDirectionOperator(OPERATORS[random.nextInt(OPERATORS.length)]);
+        }
+
+
 //        subscription.setDateTime(
 //                LocalDate.ofEpochDay(LocalDate.of(1990, 1, 1).toEpochDay() + random.nextInt((int) (LocalDate.of(2024, 1, 1).toEpochDay() - LocalDate.of(1990, 1, 1).toEpochDay())))
 //        );
-
-        subscription.setCityOperator(OPERATORS[random.nextInt(OPERATORS.length)]);
-        subscription.setTemperatureOperator(OPERATORS[random.nextInt(OPERATORS.length)]);
-        subscription.setWindSpeedOperator(OPERATORS[random.nextInt(OPERATORS.length)]);
-        subscription.setRainOperator(OPERATORS[random.nextInt(OPERATORS.length)]);
-        subscription.setDirectionOperator(OPERATORS[random.nextInt(OPERATORS.length)]);
 //        subscription.setDateTimeOperator(OPERATORS[random.nextInt(OPERATORS.length)]);
 
         return subscription;
     }
+
+
 }

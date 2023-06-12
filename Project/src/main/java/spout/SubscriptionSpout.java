@@ -11,32 +11,69 @@ import org.apache.storm.tuple.Values;
 import org.apache.storm.utils.Utils;
 import utils.DataGenerator;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 public class SubscriptionSpout extends BaseRichSpout {
-    private final DataGenerator dataGenerator;
     private SpoutOutputCollector collector;
-    private int currentSubscribors;
-    private Random random = new Random();
+    int totalSubscriptions;
+    int currentSubscriptions;
+    int numberOfCities;
+    int numberOfTemperatures;
+    int numberOfWindSpeeds;
+    int numberOfRainValues;
+    int numberOfDirections;
+    DataGenerator dataGenerator;
 
-    public SubscriptionSpout(DataGenerator dataGenerator){
+    public SubscriptionSpout(int totalSubscriptions, HashMap<String, Float> freq, DataGenerator dataGenerator){
+        this.totalSubscriptions = totalSubscriptions;
+        this.currentSubscriptions = 0;
         this.dataGenerator = dataGenerator;
+        for (Map.Entry<String, Float> entry : freq.entrySet()) {
+            String key = entry.getKey();
+            Float value = entry.getValue();
+            switch (key) {
+                case "city":
+                    numberOfCities = (int) (totalSubscriptions * value);
+                    break;
+                case "temperature":
+                    numberOfTemperatures = (int) (totalSubscriptions * value);
+                    break;
+                case "rain":
+                    numberOfRainValues = (int) (totalSubscriptions * value);
+                    break;
+                case "wind":
+                    numberOfWindSpeeds = (int) (totalSubscriptions * value);
+                    break;
+                case "direction":
+                    numberOfDirections = (int) (totalSubscriptions * value);
+                    break;
+                default:
+                    return;
+            }
+        }
     }
 
     @Override
     public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
         this.collector = collector;
-        this.currentSubscribors = 0;
     }
 
     @Override
     public void nextTuple() {
-        if (this.currentSubscribors < 100) {
-            Subscription subscription = dataGenerator.generateSubscription();
-
-            collector.emit(new Values(Integer.toString(currentSubscribors), subscription));
-            currentSubscribors++;
+        if (this.currentSubscriptions < this.totalSubscriptions) {
+            System.out.println(numberOfCities + " " + numberOfTemperatures + " " + numberOfRainValues);
+            Subscription subscription = dataGenerator.generateSubscription(
+                    numberOfCities-- > 0,
+                    numberOfTemperatures-- > 0,
+                    numberOfRainValues-- > 0,
+                    numberOfWindSpeeds-- > 0,
+                    numberOfDirections-- > 0
+            );
+            System.out.println(numberOfCities + " " + numberOfTemperatures + " " + numberOfRainValues);
+            this.currentSubscriptions++;
+            collector.emit(new Values(subscription));
         }else{
             // Așteptați o perioadă de timp între emiteri
             Utils.sleep(100);
@@ -45,7 +82,7 @@ public class SubscriptionSpout extends BaseRichSpout {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("subscriber", "subscription"));
+        declarer.declare(new Fields("subscription"));
     }
 
 }

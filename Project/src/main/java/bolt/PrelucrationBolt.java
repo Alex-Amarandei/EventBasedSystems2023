@@ -30,27 +30,21 @@ public class PrelucrationBolt extends BaseRichBolt {
 
         if (sourceComponent.equals("subscription-spout")) {
             Subscription subscription = (Subscription) input.getValueByField("subscription");
-            System.out.println("intra subscriptie");
             List<Subscription> updatedSubscriptions = new ArrayList<>(subscriptions.get());
             updatedSubscriptions.add(subscription);
             subscriptions.set(updatedSubscriptions);
         } else if (sourceComponent.equals("publisher-spout")) {
             Publication publication = (Publication) input.getValueByField("publication");
-            System.out.println("intra publisher");
             List<Publication> updatedPublications = new ArrayList<>(publications.get());
             updatedPublications.add(publication);
             publications.set(updatedPublications);
         }
 
         HashMap<List<Publication>, List<Subscription>> test2 = new HashMap<>();
-        for (int i = 0; i < publications.get().size(); i++) {
-            if(publications.get().size() <= subscriptions.get().size())
-                test2.put(Collections.singletonList(publications.get().get(i)), Collections.singletonList(subscriptions.get().get(i)));
-        }
+        test2.put(publications.get(), subscriptions.get());
         test.set(test2);
         collector.emit("test",  new Values(test));
 
-        // Confirmarea procesării tuplului
         collector.ack(input);
     }
 
