@@ -2,6 +2,23 @@
 
 ---
 
+### Topology Overview
+
+```mermaid
+graph
+    P --> B1;
+    P --> B2;
+    P --> B3;
+    S --> B1;
+    S --> B2;
+    S --> B3;
+    B1 --> N;
+    B2 --> N;
+    B3 --> N;
+```
+
+---
+
 ### Number of Threads Used: 10
 
 ### 1. The frequency of the equality operator on the respective field is 100%
