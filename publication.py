@@ -50,7 +50,7 @@ class Publication:
         start_date = datetime.now() - timedelta(days=days_before)
         end_date = datetime.now()
         random_date = start_date + timedelta(
-            days=random.randrange((end_date - start_date).days)
+            days=int_picker(range((end_date - start_date).days)
         )
         # format to only include day, month, and year
         formatted_date = random_date.strftime("%d.%m.%Y")

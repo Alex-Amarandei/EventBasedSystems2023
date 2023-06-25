@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option java_package = "fii.ebs.generated";
+option java_outer_classname = "SubscriptionModel";
+option java_multiple_files = true;
+
+message Subscription {
+  message FieldSubscription {
+    string key = 1;
+    string operator = 2;
+    string value = 3;
+  }
+
+  repeated FieldSubscription fieldSubscriptions = 1;
+}

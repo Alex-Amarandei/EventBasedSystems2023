@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option java_package = "fii.ebs.generated";
+option java_outer_classname = "PublicationModel";
+option java_multiple_files = true;
+
+message Publication {
+  string stationId = 1;
+  string city = 2;
+  string temperature = 3;
+  string windSpeed = 4;
+  string direction = 5;
+}

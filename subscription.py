@@ -2,7 +2,11 @@ import random
 from datetime import datetime, timedelta
 
 from constants import OPERATORS
-from pickers import pick_random_value, pick_random_from_range, pick_random_float_from_range
+from pickers import (
+    pick_random_value,
+    pick_random_from_range,
+    pick_random_float_from_range,
+)
 from values import Values
 
 
@@ -113,27 +117,27 @@ class Subscription:
 
     @staticmethod
     def create_random_subscriptions(
-            number_of_subscriptions,
-            cities,
-            cities_freq,
-            lowest_temperature,
-            highest_temperature,
-            temperature_freq,
-            lowest_rainfall,
-            highest_rainfall,
-            rainfall_freq,
-            lowest_wind_speed,
-            highest_wind_speed,
-            wind_speed_freq,
-            directions,
-            direction_freq,
-            days_before,
-            days_before_freq,
-            equals_freq,
-            less_than_freq,
-            more_than_freq,
-            less_or_equal_to_freq,
-            more_or_equal_to_freq,
+        number_of_subscriptions,
+        cities,
+        cities_freq,
+        lowest_temperature,
+        highest_temperature,
+        temperature_freq,
+        lowest_rainfall,
+        highest_rainfall,
+        rainfall_freq,
+        lowest_wind_speed,
+        highest_wind_speed,
+        wind_speed_freq,
+        directions,
+        direction_freq,
+        days_before,
+        days_before_freq,
+        equals_freq,
+        less_than_freq,
+        more_than_freq,
+        less_or_equal_to_freq,
+        more_or_equal_to_freq,
     ):
         list_of_subscriptions = []
 
@@ -145,15 +149,21 @@ class Subscription:
                 cities_freq = cities_freq - 1
 
             elif temperature_freq > 0:
-                subscription.temp.field = pick_random_from_range(lowest_temperature, highest_temperature)
+                subscription.temp.field = pick_random_from_range(
+                    lowest_temperature, highest_temperature
+                )
                 temperature_freq = temperature_freq - 1
 
             elif rainfall_freq > 0:
-                subscription.rainfall.field = pick_random_float_from_range(lowest_rainfall, highest_rainfall)
+                subscription.rainfall.field = pick_random_float_from_range(
+                    lowest_rainfall, highest_rainfall
+                )
                 rainfall_freq = rainfall_freq - 1
 
             elif wind_speed_freq > 0:
-                subscription.wind.field = pick_random_from_range(lowest_wind_speed, highest_wind_speed)
+                subscription.wind.field = pick_random_from_range(
+                    lowest_wind_speed, highest_wind_speed
+                )
                 wind_speed_freq = wind_speed_freq - 1
 
             elif direction_freq > 0:
@@ -164,7 +174,7 @@ class Subscription:
                 start_date = datetime.now() - timedelta(days=days_before)
                 end_date = datetime.now()
                 random_date = start_date + timedelta(
-                    days=random.randrange(0, (end_date - start_date).days)
+                    days=random.randint(range(0, (end_date - start_date).days))
                 )
 
                 # format to only include day, month, and year
@@ -176,12 +186,12 @@ class Subscription:
         index = 0
 
         while (
-                cities_freq != 0
-                or temperature_freq != 0
-                or rainfall_freq != 0
-                or wind_speed_freq != 0
-                or direction_freq != 0
-                or days_before_freq != 0
+            cities_freq != 0
+            or temperature_freq != 0
+            or rainfall_freq != 0
+            or wind_speed_freq != 0
+            or direction_freq != 0
+            or days_before_freq != 0
         ):
             index = index % number_of_subscriptions
 
@@ -190,28 +200,36 @@ class Subscription:
                 cities_freq = cities_freq - 1
 
             elif temperature_freq > 0:
-                list_of_subscriptions[index].temp.field = pick_random_from_range(lowest_temperature,
-                                                                                 highest_temperature)
+                list_of_subscriptions[index].temp.field = pick_random_from_range(
+                    lowest_temperature, highest_temperature
+                )
                 temperature_freq = temperature_freq - 1
 
             elif rainfall_freq > 0:
-                list_of_subscriptions[index].rainfall.field = pick_random_float_from_range(lowest_rainfall,
-                                                                                           highest_rainfall)
+                list_of_subscriptions[
+                    index
+                ].rainfall.field = pick_random_float_from_range(
+                    lowest_rainfall, highest_rainfall
+                )
                 rainfall_freq = rainfall_freq - 1
 
             elif wind_speed_freq > 0:
-                list_of_subscriptions[index].wind.field = pick_random_from_range(lowest_wind_speed, highest_wind_speed)
+                list_of_subscriptions[index].wind.field = pick_random_from_range(
+                    lowest_wind_speed, highest_wind_speed
+                )
                 wind_speed_freq = wind_speed_freq - 1
 
             elif direction_freq > 0:
-                list_of_subscriptions[index].direction.field = pick_random_value(directions)
+                list_of_subscriptions[index].direction.field = pick_random_value(
+                    directions
+                )
                 direction_freq = direction_freq - 1
 
             elif days_before_freq > 0:
                 start_date = datetime.now() - timedelta(days=days_before)
                 end_date = datetime.now()
                 random_date = start_date + timedelta(
-                    days=random.randrange((end_date - start_date).days)
+                    days=random.randint(range((end_date - start_date).days))
                 )
                 # format to only include day, month, and year
                 formatted_date = random_date.strftime("%d.%m.%Y")
@@ -223,42 +241,45 @@ class Subscription:
         index = 0
 
         while (
-                equals_freq != 0
-                or less_than_freq != 0
-                or less_or_equal_to_freq != 0
-                or more_than_freq != 0
-                or more_or_equal_to_freq != 0
+            equals_freq != 0
+            or less_than_freq != 0
+            or less_or_equal_to_freq != 0
+            or more_than_freq != 0
+            or more_or_equal_to_freq != 0
         ):
             index = index % number_of_subscriptions
 
-            if equals_freq > 0 and len(list_of_subscriptions[index].can_add_operator()) > 0:
+            if (
+                equals_freq > 0
+                and len(list_of_subscriptions[index].can_add_operator()) > 0
+            ):
                 list_of_subscriptions[index].set_operators(OPERATORS[0])
                 equals_freq = equals_freq - 1
 
             elif (
-                    less_than_freq > 0
-                    and len(list_of_subscriptions[index].can_add_operator()) > 0
+                less_than_freq > 0
+                and len(list_of_subscriptions[index].can_add_operator()) > 0
             ):
                 list_of_subscriptions[index].set_operators(OPERATORS[1])
                 less_than_freq = less_than_freq - 1
 
             elif (
-                    less_or_equal_to_freq > 0
-                    and len(list_of_subscriptions[index].can_add_operator()) > 0
+                less_or_equal_to_freq > 0
+                and len(list_of_subscriptions[index].can_add_operator()) > 0
             ):
                 list_of_subscriptions[index].set_operators(OPERATORS[2])
                 less_or_equal_to_freq = less_or_equal_to_freq - 1
 
             elif (
-                    more_than_freq > 0
-                    and len(list_of_subscriptions[index].can_add_operator()) > 0
+                more_than_freq > 0
+                and len(list_of_subscriptions[index].can_add_operator()) > 0
             ):
                 list_of_subscriptions[index].set_operators(OPERATORS[3])
                 more_than_freq = more_than_freq - 1
 
             elif (
-                    more_or_equal_to_freq > 0
-                    and len(list_of_subscriptions[index].can_add_operator()) > 0
+                more_or_equal_to_freq > 0
+                and len(list_of_subscriptions[index].can_add_operator()) > 0
             ):
                 list_of_subscriptions[index].set_operators(OPERATORS[4])
                 more_or_equal_to_freq = more_or_equal_to_freq - 1
