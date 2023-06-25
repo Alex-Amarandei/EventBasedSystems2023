@@ -70,7 +70,6 @@ public class App {
 
             cluster.killTopology(TOPOLOGY_NAME);
             cluster.shutdown();
-
             cluster.close();
 
             StatCounter.latency /= StatCounter.publicationsNumber;

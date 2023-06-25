@@ -19,7 +19,7 @@ public class OutputPrinter {
     }
 
     public static String formatEvent(String task, String sourceName, String event) {
-        return String.format("#### %s GOT THE FOLLOWING %s FROM:%n%s", task, event.toUpperCase(), sourceName);
+        return String.format("#### %s GOT THE FOLLOWING %s:%n%s", task, event.toUpperCase(), sourceName);
     }
 
     public static String formatNumberOfPublications(int numberOfPublications) {
@@ -31,6 +31,6 @@ public class OutputPrinter {
     }
 
     public static String formatAverageMatchRate(float averageMatchRate) {
-        return String.format("### AVERAGE MATCH RATE: %s%n", averageMatchRate);
+        return String.format("### AVERAGE MATCH RATE: %s%n", averageMatchRate / 100);
     }
 }

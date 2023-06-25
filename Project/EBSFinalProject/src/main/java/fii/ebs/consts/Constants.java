@@ -15,8 +15,8 @@ public class Constants {
     public static final int WINDOW_SIZE = 5;
     public static final String TIMESTAMP = "timestamp";
 
-    public static final String BROKER = "broker";
-    public static final String NOTIFIER = "notifier";
+    public static final String BROKER = "BROKER";
+    public static final String NOTIFIER = "NOTIFIER";
     public static final String SUBSCRIPTION = "subscription";
     public static final String PUBLICATION = "publication";
 
