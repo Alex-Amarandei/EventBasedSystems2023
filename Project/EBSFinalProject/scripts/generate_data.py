@@ -5,9 +5,7 @@ import random
 import time
 
 from constants import (
-    ALL_OPERATORS,
     CONFIG_FILE_PATH,
-    EQUALITY_OPERATORS,
     FIELD,
     FREQUENCY,
     INDEX,
@@ -20,6 +18,8 @@ from constants import (
     SUB,
     SUBSCRIPTIONS,
     TYPE,
+    ALL_OPERATORS,
+    EQUALITY_OPERATORS
 )
 from generators import generate
 from pickers import (
