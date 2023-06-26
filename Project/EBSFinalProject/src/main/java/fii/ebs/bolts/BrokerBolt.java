@@ -13,14 +13,11 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static fii.ebs.consts.Constants.CITY;
 import static fii.ebs.consts.Constants.DIRECTION;
@@ -35,6 +32,7 @@ import static fii.ebs.consts.Constants.SUBSCRIPTION;
 import static fii.ebs.consts.Constants.TEMPERATURE;
 import static fii.ebs.consts.Constants.WINDOW_SIZE;
 import static fii.ebs.consts.Constants.WIND_SPEED;
+import static fii.ebs.filters.EncryptionFilter.filterDecryptValue;
 import static fii.ebs.utils.Converter.convertFieldSubscriptions;
 import static fii.ebs.utils.OutputPrinter.formatEvent;
 import static fii.ebs.utils.OutputPrinter.formatInvalidField;
@@ -43,29 +41,12 @@ import static fii.ebs.utils.OutputPrinter.printTextToStream;
 
 public class BrokerBolt extends BaseRichBolt {
     private static final long serialVersionUID = 2;
-    private final List<Float> temperatures = new ArrayList<>();
+    private final List<Float> windSpeeds = new ArrayList<>();
     private final HashMap<String, List<List<FieldSubscription>>> subscriptions = new HashMap<>();
     private OutputCollector collector;
 
     private String task;
 
-    private static String decryptPublicationField(String value) {
-        try {
-            String pythonScriptPath = "/Users/alexwama/Files/Github/EventBasedSystems2023/project/EBSFinalProject/scripts/encryption.py";
-            String command = "python3 " + pythonScriptPath + " decrypt " + value;
-
-            Process process = Runtime.getRuntime().exec(command);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String decryptedValue = reader.readLine();
-            reader.close();
-
-            return decryptedValue;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-        
     @Override
     public void prepare(Map<String, Object> topologyConfig, TopologyContext context, OutputCollector collector) {
         this.collector = collector;
@@ -87,7 +68,6 @@ public class BrokerBolt extends BaseRichBolt {
                 return publication.getDirection();
             default:
                 printTextToStream(formatInvalidField(field), ERROR_STREAM);
-                System.exit(1);
         }
         return null;
     }
@@ -128,12 +108,12 @@ public class BrokerBolt extends BaseRichBolt {
             StatCounter.latency += latency;
             StatCounter.publicationsNumber++;
 
-            if (this.temperatures.size() == WINDOW_SIZE)
-                this.temperatures.clear();
+            if (this.windSpeeds.size() == WINDOW_SIZE)
+                this.windSpeeds.clear();
 
             try {
-                Publication publication_data = Publication.parseFrom(input.getBinaryByField(PUBLICATION_DATA));
-                this.temperatures.add(Float.parseFloat(decryptPublicationField(publication_data.getTemperature())));
+                Publication publicationData = Publication.parseFrom(input.getBinaryByField(PUBLICATION_DATA));
+                this.windSpeeds.add(Float.parseFloat(filterDecryptValue(publicationData.getTemperature())));
 
                 for (String boltId : subscriptions.keySet()) {
                     List<List<FieldSubscription>> listOfFieldSubscriptionsList = subscriptions.get(boltId);
@@ -145,7 +125,7 @@ public class BrokerBolt extends BaseRichBolt {
                         for (FieldSubscription fieldSubscription : fieldSubscriptionList) {
                             switch (fieldSubscription.getOperator()) {
                                 case "==": {
-                                    String publication = getPublicationField(publication_data,
+                                    String publication = getPublicationField(publicationData,
                                             fieldSubscription.getField());
                                     if (!publication.equals(fieldSubscription.getValue())) {
                                         valid = false;
@@ -155,7 +135,7 @@ public class BrokerBolt extends BaseRichBolt {
                                 }
 
                                 case "!=": {
-                                    String publication = getPublicationField(publication_data,
+                                    String publication = getPublicationField(publicationData,
                                             fieldSubscription.getField());
                                     if (publication.equals(fieldSubscription.getValue())) {
                                         valid = false;
@@ -166,10 +146,10 @@ public class BrokerBolt extends BaseRichBolt {
 
                                 case "<": {
                                     float publication =
-                                            Float.parseFloat(decryptPublicationField(getPublicationField(publication_data,
+                                            Float.parseFloat(filterDecryptValue(getPublicationField(publicationData,
                                                     fieldSubscription.getField())));
                                     float subscriptionValue =
-                                            Float.parseFloat(decryptPublicationField(fieldSubscription.getValue().toString()));
+                                            Float.parseFloat(filterDecryptValue(fieldSubscription.getValue().toString()));
                                     if (!(publication < subscriptionValue)) {
                                         valid = false;
                                         break outerLoop;
@@ -179,10 +159,10 @@ public class BrokerBolt extends BaseRichBolt {
 
                                 case ">": {
                                     float publication =
-                                            Float.parseFloat(decryptPublicationField(getPublicationField(publication_data,
+                                            Float.parseFloat(filterDecryptValue(getPublicationField(publicationData,
                                                     fieldSubscription.getField())));
                                     float subscriptionValue =
-                                            Float.parseFloat(decryptPublicationField(fieldSubscription.getValue().toString()));
+                                            Float.parseFloat(filterDecryptValue(fieldSubscription.getValue().toString()));
                                     if (!(publication > subscriptionValue)) {
                                         valid = false;
                                         break outerLoop;
@@ -192,10 +172,10 @@ public class BrokerBolt extends BaseRichBolt {
 
                                 case "<=": {
                                     float publication =
-                                            Float.parseFloat(decryptPublicationField(getPublicationField(publication_data,
+                                            Float.parseFloat(filterDecryptValue(getPublicationField(publicationData,
                                                     fieldSubscription.getField())));
                                     float subscriptionValue =
-                                            Float.parseFloat(decryptPublicationField(fieldSubscription.getValue().toString()));
+                                            Float.parseFloat(filterDecryptValue(fieldSubscription.getValue().toString()));
                                     if (!(publication <= subscriptionValue)) {
                                         valid = false;
                                         break outerLoop;
@@ -205,28 +185,27 @@ public class BrokerBolt extends BaseRichBolt {
 
                                 case ">=": {
                                     float publication =
-                                            Float.parseFloat(decryptPublicationField(getPublicationField(publication_data,
+                                            Float.parseFloat(filterDecryptValue(getPublicationField(publicationData,
                                                     fieldSubscription.getField())));
                                     float subscriptionValue =
-                                            Float.parseFloat(decryptPublicationField(fieldSubscription.getValue().toString()));
+                                            Float.parseFloat(filterDecryptValue(fieldSubscription.getValue().toString()));
                                     if (!(publication >= subscriptionValue)) {
                                         valid = false;
                                         break outerLoop;
                                     }
                                     break;
                                 }
-
                                 case "~":
-                                    if (this.temperatures.size() < WINDOW_SIZE) {
+                                    if (this.windSpeeds.size() < WINDOW_SIZE) {
                                         valid = false;
                                         break outerLoop;
                                     } else {
                                         float publication = 0;
-                                        for (float temperature : this.temperatures) {
-                                            publication += temperature;
+                                        for (float windSpeed : this.windSpeeds) {
+                                            publication += windSpeed;
                                         }
-                                        publication /= temperatures.size();
-                                        float subscriptionValue = Float.parseFloat(decryptPublicationField(fieldSubscription.getValue().toString()));
+                                        publication /= windSpeeds.size();
+                                        float subscriptionValue = Float.parseFloat(filterDecryptValue(fieldSubscription.getValue().toString()));
                                         if (!(publication == subscriptionValue)) {
                                             valid = false;
                                             break outerLoop;
@@ -238,8 +217,7 @@ public class BrokerBolt extends BaseRichBolt {
 
                         if (valid) {
                             StatCounter.matchNumber++;
-
-                            collector.emit(NOTIFIER + boltId, new Values(publication_data.toByteArray()));
+                            collector.emit(NOTIFIER + boltId, new Values(publicationData.toByteArray()));
                         }
                     }
                 }

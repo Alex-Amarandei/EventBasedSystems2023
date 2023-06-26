@@ -51,7 +51,6 @@ public class App {
                         .shuffleGrouping(BROKER + "3", NOTIFIER + i);
             }
 
-
             Config config = new Config();
 
             LocalCluster cluster = new LocalCluster();

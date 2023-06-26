@@ -87,13 +87,13 @@ def main():
         indexes = random.sample(
             subscription_indexes, math.ceil(percent * len(subscription_indexes) / 100)
         )
-        q_constaint = {FIELD: restriction[FIELD], OPERATOR: None}
+        queue_restriction = {FIELD: restriction[FIELD], OPERATOR: None}
 
         if restriction[FIELD] in fields:
             fields.remove(restriction[FIELD])
 
         for index in indexes:
-            to_generate[index][RESTRICTIONS].append(q_constaint)
+            to_generate[index][RESTRICTIONS].append(queue_restriction)
 
     input_queue = multiprocessing.JoinableQueue()
     output_queue = multiprocessing.Manager().Queue()
@@ -125,7 +125,7 @@ def main():
             field_indexes[restriction[FIELD]],
             math.ceil(percent * len(field_indexes[restriction[FIELD]]) / 100),
         )
-        q_constaint = {
+        queue_restriction = {
             FIELD: restriction[FIELD],
             OPERATOR: restriction[OPERATOR],
         }
@@ -134,7 +134,7 @@ def main():
             operators[restriction[FIELD]].remove(restriction[OPERATOR])
 
         for index in indexes:
-            to_generate[index][RESTRICTIONS].append(q_constaint)
+            to_generate[index][RESTRICTIONS].append(queue_restriction)
 
     input_queue = multiprocessing.JoinableQueue()
     output_queue = multiprocessing.Manager().Queue()
