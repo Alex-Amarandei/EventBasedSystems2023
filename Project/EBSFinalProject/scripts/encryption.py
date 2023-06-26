@@ -1,11 +1,11 @@
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad, unpad
+from Cryptodome.Cipher import AES
+from Cryptodome.Util.Padding import pad, unpad
 import base64
 import sys
 
 
 def encrypt(value):
-    key = b'f8b27a0d8c837edc8fb00ea85f502fb4'
+    key = b"f8b27a0d8c837edc8fb00ea85f502fb4"
     cipher = AES.new(key, AES.MODE_ECB)
     encrypted_data = cipher.encrypt(pad(value.encode(), AES.block_size))
     encrypted_value = base64.b64encode(encrypted_data).decode()
@@ -13,7 +13,7 @@ def encrypt(value):
 
 
 def decrypt(value):
-    key = b'f8b27a0d8c837edc8fb00ea85f502fb4'
+    key = b"f8b27a0d8c837edc8fb00ea85f502fb4"
     cipher = AES.new(key, AES.MODE_ECB)
     decrypted_data = cipher.decrypt(base64.b64decode(value))
     decrypted_value = unpad(decrypted_data, AES.block_size).decode()

@@ -27,6 +27,8 @@ public class Constants {
 
     public static final String DATA_FILE_PATH = "/Users/alexwama/Files/Github/EventBasedSystems2023/project/EBSFinalProject/data/results" +
             ".json";
+    public static final String PYTHON_SCRIPT_PATH = "/Users/alexwama/Files/Github/EventBasedSystems2023/project/EBSFinalProject/scripts/" +
+            "encryption.py";
 
     public static final String STATION_ID = "stationId";
     public static final String TEMPERATURE = "temperature";
@@ -48,6 +50,4 @@ public class Constants {
             throw new RuntimeException(e);
         }
     }
-
-
 }

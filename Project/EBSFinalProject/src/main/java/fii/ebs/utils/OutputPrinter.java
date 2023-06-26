@@ -4,10 +4,17 @@ import lombok.experimental.UtilityClass;
 
 import java.io.PrintStream;
 
+import static fii.ebs.consts.Constants.ERROR_STREAM;
+import static fii.ebs.utils.Converter.decryptDictionaryFields;
+
 @UtilityClass
 public class OutputPrinter {
     public static void printTextToStream(String text, PrintStream stream) {
         stream.println(text);
+
+        if (stream.equals(ERROR_STREAM)) {
+            System.exit(1);
+        }
     }
 
     public static String formatTask(String task) {
@@ -19,7 +26,12 @@ public class OutputPrinter {
     }
 
     public static String formatEvent(String task, String value, String event) {
-        return String.format("#### %s GOT THE FOLLOWING %s:%n%s", task, event.toUpperCase(), value);
+        String textToPrint = String.format("#### %s GOT THE FOLLOWING %s:%n%s", task, event.toUpperCase(), value);
+
+        if (value.contains(":")) {
+            textToPrint = String.format("#### %s GOT THE FOLLOWING %s:%n%s", task, event.toUpperCase(), decryptDictionaryFields(value));
+        }
+        return textToPrint;
     }
 
     public static String formatNumberOfPublications(int numberOfPublications) {
@@ -31,6 +43,6 @@ public class OutputPrinter {
     }
 
     public static String formatAverageMatchRate(float averageMatchRate) {
-        return String.format("### AVERAGE MATCH RATE: %s%n", averageMatchRate / 100);
+        return String.format("### AVERAGE MATCH RATE: %s%n", averageMatchRate);
     }
 }
