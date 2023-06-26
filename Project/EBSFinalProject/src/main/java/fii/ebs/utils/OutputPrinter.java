@@ -18,8 +18,8 @@ public class OutputPrinter {
         return String.format("INVALID FIELD <%s>%n", field);
     }
 
-    public static String formatEvent(String task, String sourceName, String event) {
-        return String.format("#### %s GOT THE FOLLOWING %s:%n%s", task, event.toUpperCase(), sourceName);
+    public static String formatEvent(String task, String value, String event) {
+        return String.format("#### %s GOT THE FOLLOWING %s:%n%s", task, event.toUpperCase(), value);
     }
 
     public static String formatNumberOfPublications(int numberOfPublications) {
